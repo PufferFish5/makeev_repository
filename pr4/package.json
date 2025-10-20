@@ -1,0 +1,17 @@
+{
+    "type": "module",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "name": "pr4",
+    "version": "1.0.0",
+    "description": "scrr",
+    "main": "app.js",
+    "author": "makeev",
+    "license": "ISC",
+    "dependencies": {
+        "chalk": "^5.6.2",
+        "express": "^5.1.0"
+    },
+    "keywords": []
+}
