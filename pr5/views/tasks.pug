@@ -1,0 +1,13 @@
+extends index
+
+block content
+  if tasks.length
+    ul
+      each task in tasks
+        li
+          if task.completed
+            span(style="color: green; font-weight: bold") #{task.title}
+          else
+            span(style="color: red; font-weight: bold") #{task.title}
+  else
+    p No tasks
