@@ -8,8 +8,8 @@ services:
     volumes:
       - mongo-data:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: vladm
-      MONGO_INITDB_ROOT_PASSWORD: 1111
+      #MONGO_INITDB_ROOT_USERNAME: vladm
+      #MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: mongodb_def
 
 volumes:
