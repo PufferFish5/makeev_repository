@@ -61,7 +61,7 @@ async function runMongoDBSetup() {
 }
 async function insertUser() {
     try {
-        const result = await User.create(examUsers);
+        const result = await User.insertMany(examUsers);
         console.log(`User inserted. ID: ${result._id}`);
         return result;
     } catch (e) {

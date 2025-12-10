@@ -13,7 +13,7 @@ app.use(express.json())
 app.set("view engine", "pug");
 app.set("views", "./views");
 app.use(express.static('public'));
-let tasks = [
+/*let tasks = [
     { 
         title: "Oleg etogo daze ne yvidit,",
         description: "i zachem ya togda eto pishy?",
@@ -33,7 +33,7 @@ let tasks = [
         description: "Vstavit' kruto.jpg v footer proekta",
         dueDate: new Date('2025-12-20')
     }
-];
+];*/
 //let nextId = 3;
 
 const taskSchema = Joi.object({
@@ -61,10 +61,21 @@ const tasksArray = await taskController.getAllTasks();
 app.get("/tasks", async (req, res) => {
   res.render('tasks', { tasks: tasksArray, user: currentUser });
 });
+
+//getus
+app.get("/api/users", async (req, res) => {
+  try {
+    const users = await taskController.getUserInfo();
+    res.json(users);
+  } catch (e) {
+    res.status(500).json({message: e.message});
+  }
+});
+
 //getstatus
 app.get("/api/tasks/status", async (req, res) => {
   try {
-    tasks = await taskController.getTasksByStatus(req.query.status);
+    const tasks = await taskController.getTasksByStatus(req.query.status);
     res.json(tasks);
   } catch (e) {
     res.status(500).json({message: e.message});
@@ -76,26 +87,16 @@ app.get("/api/tasks/summary", async (req, res) => {
     try {
         const summary = await taskController.getTasksSummary(); 
         res.json(summary);
-        
     } catch (e) {
         res.status(500).json({ message: e.message });
     }
-});
-//getus
-app.get("/api/users", async (req, res) => {
-  try {
-    users = await taskController.getUserInfo();
-    res.json(users);
-  } catch (e) {
-    res.status(500).json({message: e.message});
-  }
 });
 
 //getall
 app.get("/api/tasks", async (req, res) => {
   //res.json(tasks);
   try {
-    tasks = await taskController.getAllTasks();
+    const tasks = await taskController.getAllTasks();
     res.status(201).json(tasks);
   } catch (e) {
     res.status(500).json({message: e.message});
@@ -105,13 +106,12 @@ app.get("/api/tasks", async (req, res) => {
 //getid
 app.get("/api/tasks/:id", async (req, res) => {
   try {
-    tasks = await taskController.getTaskById(req.params.id);
+    const tasks = await taskController.getTaskById(req.params.id);
     res.json(tasks);
   } catch (e) {
     res.status(500).json({message: e.message});
   }
 });
-
 
 //create
 app.post("/api/tasks", async (req, res) => {
@@ -129,6 +129,24 @@ app.post("/api/tasks", async (req, res) => {
     }
     res.status(500).json({message: 'Unknown error'})
   }
+});
+
+//updStatus
+app.put('/api/tasks/status/:id', async (req, res) => {
+    const id = req.params.id; 
+    try {
+        const updatedTask = await taskController.updateStatus(id);
+        if (!updatedTask) {
+            return res.status(404).json({ message: 'Can not find task' });
+        }
+        res.status(200).json(updatedTask);
+        
+    } catch (e) {
+        if (e.name === 'ValidationError') {
+            return res.status(400).json({ error: e.message });
+        }
+        res.status(500).json({ message: 'Server Error' });
+    }
 });
 
 //updData
@@ -149,25 +167,6 @@ app.put('/api/tasks/:id', async (req, res) => {
         res.status(500).json({ message: 'Server Error' });
     }
 });
-
-//updStatus
-app.put('/api/tasks/:id', async (req, res) => {
-    const id = req.params.id; 
-    try {
-        const updatedTask = await taskController.updateStatus(id);
-        if (!updatedTask) {
-            return res.status(404).json({ message: 'Can not find task' });
-        }
-        res.status(200).json(updatedTask);
-        
-    } catch (e) {
-        if (e.name === 'ValidationError') {
-            return res.status(400).json({ error: e.message });
-        }
-        res.status(500).json({ message: 'Server Error' });
-    }
-});
-
 
 app.delete("/api/tasks/:id", async (req, res) => {
   const id = parseInt(req.params.id);
