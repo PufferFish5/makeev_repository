@@ -40,7 +40,15 @@ const taskSchema = Joi.object({
     title: Joi.string()
         .min(3)
         .max(100)  
-        .required()  
+        .required(),
+    description: Joi.string()
+      .trim()
+      .allow('')
+      .optional(), 
+    priority: Joi.number()
+      .integer()
+      .min(1).max(5)
+      .optional(),
 });
 
 mongoose.connect(DB_URI)
@@ -48,10 +56,11 @@ mongoose.connect(DB_URI)
   .catch(err => console.error("❌ Помилка підключення:", err));
 
 
-app.get('/tasks', (req, res) => {
-  res.render('tasks', { tasks });
+const currentUser = await taskController.getUserInfo();
+const tasksArray = await taskController.getAllTasks();
+app.get("/tasks", async (req, res) => {
+  res.render('tasks', { tasks: tasksArray, user: currentUser });
 });
-
 //getstatus
 app.get("/api/tasks/status", async (req, res) => {
   try {
@@ -71,6 +80,15 @@ app.get("/api/tasks/summary", async (req, res) => {
     } catch (e) {
         res.status(500).json({ message: e.message });
     }
+});
+//getus
+app.get("/api/users", async (req, res) => {
+  try {
+    users = await taskController.getUserInfo();
+    res.json(users);
+  } catch (e) {
+    res.status(500).json({message: e.message});
+  }
 });
 
 //getall
@@ -166,8 +184,6 @@ app.delete("/api/tasks/:id", async (req, res) => {
       res.status(500).json({ message: 'Server Error' });
   }
 });
-
-
 app.listen(PORT, () => {
 console.log(`Server is running at
 http://localhost:${PORT}`);

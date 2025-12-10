@@ -1,5 +1,9 @@
 import Task from '../models/task.js';
+import User from '../models/user.js';
 
+export const getUserInfo = async () => {
+    return await User.findOne();
+};
 //create
 export const createTask = async (data) => {
     return await Task.create(data);

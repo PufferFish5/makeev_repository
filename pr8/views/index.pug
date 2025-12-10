@@ -7,6 +7,13 @@ html(lang="en")
     body
         header
             h1 Things to do
+            block user_info
+                if user
+                    div.user-info(style="float: right; padding: 10px; border: 1px solid #ccc;")
+                        p Logged in as: 
+                            b #{user.username}
+                        p Role: 
+                            i #{user.role}
             hr
         main
             block content

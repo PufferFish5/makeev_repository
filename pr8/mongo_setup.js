@@ -2,11 +2,11 @@ import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import * as taskController from './controllers/task_controller.js';
-import Task from '../models/task.js';
-import User from './models/User.js';
+import Task from './models/task.js';
+import User from './models/user.js';
 
 dotenv.config();
-const uri = DB_URI;
+const uri = process.env.DB_URI;
 let examTasks = [
     { 
         title: "Oleg etogo daze ne yvidit,",
@@ -29,21 +29,20 @@ let examTasks = [
     }
 ];
 
-const examUsers = [
-    {
+const examUsers = {
         username: "vernulsya_v_praim",
         password: "qwerty1",
         role: 'admin'
     }
-]
+
 
 async function runMongoDBSetup() {
     const client = new MongoClient(uri);
     try {
         await mongoose.connect(uri);
         console.log("✅ 1. Успішне підключення до MongoDB Server.");
-        console.log(`✅ 2. База даних '${db.databaseName}' обрана.`);
-        clearDatabase()
+        console.log(`✅ 2. База даних обрана.`);
+        await clearDatabase()
         const user = await insertUser();
         const tasks = await insertTasks();
 
@@ -55,17 +54,13 @@ async function runMongoDBSetup() {
         }
 
     } catch (error) {
-        console.error("❌ Виникла помилка підключення/операції:",
-        error.message);
+        console.error("❌ Виникла помилка підключення/операції:", error.message);
     } finally {
-        await client.close();
         console.log("--- З'єднання закрито. Роботу завершено. ---");
     }
 }
 async function insertUser() {
     try {
-        await User.deleteMany({});
-        console.log("Collection wiped");
         const result = await User.create(examUsers);
         console.log(`User inserted. ID: ${result._id}`);
         return result;
@@ -76,8 +71,6 @@ async function insertUser() {
 
 async function insertTasks() {
     try {
-        await Task.deleteMany({});
-        console.log("Collection wiped");
         const result = await Task.insertMany(examTasks);
         console.log(`Inserted ${result.length} new tasks`);
         return result;
@@ -86,35 +79,24 @@ async function insertTasks() {
     }
 }
 
-async function clearDatabase(db) {
-    try {
-        await connection.db.dropDatabase();
-        console.log("Database deleted");
-    } catch (error) {
-        console.error("Error while deleting database", error.message);
-    }
+async function clearDatabase() {
+    const connection = mongoose.connection;
+    await User.deleteMany({});
+    await Task.deleteMany({});
+    console.log("Data wiped");
 }
-
-async function clearAllCollections(db) {
-    const collections = await db.collections();
-    for (const coll of collections) {
-        await coll.drop();
-        console.log(`Колекцію ${coll.collectionName} видалено`);
-    }
-}
-
 
 async function findAllTasks() {
     try {
         const taskArr = await Task.find({});
-        console.log("Задачі знайдені")
+        console.log("Tasks founded")
         return taskArr;
     } catch(e) {
         throw e;
     }
 }
 
-async function findFrontendStudents(db) {
+async function findImportantTasks() {
     try {
         const studentsCollection = db.collection('students');
         const frontendStudents = await studentsCollection.find({ specialty: "Frontend" }).toArray();
@@ -132,7 +114,7 @@ async function findFrontendStudents(db) {
     }
 }
 
-async function updateSingleGroup(db) {
+async function updateUser() {
     const groupsCollection = db.collection("groups");
     const filter = { name: "WEB-21" }; 
     const updateDoc = {
