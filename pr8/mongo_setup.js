@@ -96,85 +96,85 @@ async function findAllTasks() {
     }
 }
 
-async function findImportantTasks() {
-    try {
-        const studentsCollection = db.collection('students');
-        const frontendStudents = await studentsCollection.find({ specialty: "Frontend" }).toArray();
+// async function findImportantTasks() {
+//     try {
+//         const studentsCollection = db.collection('students');
+//         const frontendStudents = await studentsCollection.find({ specialty: "Frontend" }).toArray();
         
-        console.log("Фронтендери знайдені");
-        if (frontendStudents.length > 0) {
-            console.log(frontendStudents);
-        } else {
-            console.log("Фронтендерів не знайдено");
-        }
-        return frontendStudents;
-    } catch(e) {
-        console.error("Помилка при пошуку", e.message);
-        throw e;
-    }
-}
+//         console.log("Фронтендери знайдені");
+//         if (frontendStudents.length > 0) {
+//             console.log(frontendStudents);
+//         } else {
+//             console.log("Фронтендерів не знайдено");
+//         }
+//         return frontendStudents;
+//     } catch(e) {
+//         console.error("Помилка при пошуку", e.message);
+//         throw e;
+//     }
+// }
 
-async function updateUser() {
-    const groupsCollection = db.collection("groups");
-    const filter = { name: "WEB-21" }; 
-    const updateDoc = {
-        $set: {curator: "Dr. Black"}
-    }
-    try {
-        const result = await groupsCollection.updateOne(filter, updateDoc);
+// async function updateUser() {
+//     const groupsCollection = db.collection("groups");
+//     const filter = { name: "WEB-21" }; 
+//     const updateDoc = {
+//         $set: {curator: "Dr. Black"}
+//     }
+//     try {
+//         const result = await groupsCollection.updateOne(filter, updateDoc);
         
-        console.log("Оновлення даних про куратора");
-        if (result.modifiedCount === 1) {
-            console.log(`Куратора групи 'WEB-21' змінено на 'Dr. Black'.`);
-        } else {
-            console.log(`Групу не знайдено`);
-        }
+//         console.log("Оновлення даних про куратора");
+//         if (result.modifiedCount === 1) {
+//             console.log(`Куратора групи 'WEB-21' змінено на 'Dr. Black'.`);
+//         } else {
+//             console.log(`Групу не знайдено`);
+//         }
         
-        return result.modifiedCount;
-    } catch (e) {
-        console.error("Куратор не оновився", e.message);
-        throw e;
-    }
-}
+//         return result.modifiedCount;
+//     } catch (e) {
+//         console.error("Куратор не оновився", e.message);
+//         throw e;
+//     }
+// }
 
-async function updateStudentsAge(db) {
-    const studentsCollection = db.collection("students");
-    const filter = {}; 
-    const updateDoc = {
-        $set: {age: 20}
-    };
-    try {
-        const result = await studentsCollection.updateMany(filter, updateDoc); 
-        console.log("Оновлення даних про студентів");
-        if (result.modifiedCount > 0) {
-            console.log(`Вік оновлено для ${result.modifiedCount} студентів.`);
-        } else {
-            console.log("Вік не оновлено");
-        }
+// async function updateStudentsAge(db) {
+//     const studentsCollection = db.collection("students");
+//     const filter = {}; 
+//     const updateDoc = {
+//         $set: {age: 20}
+//     };
+//     try {
+//         const result = await studentsCollection.updateMany(filter, updateDoc); 
+//         console.log("Оновлення даних про студентів");
+//         if (result.modifiedCount > 0) {
+//             console.log(`Вік оновлено для ${result.modifiedCount} студентів.`);
+//         } else {
+//             console.log("Вік не оновлено");
+//         }
         
-        return result.modifiedCount;
-    } catch (e) {
-        console.error("Як цю помилку обізвати?", e.message);
-        throw e;
-    }
-}
+//         return result.modifiedCount;
+//     } catch (e) {
+//         console.error("Як цю помилку обізвати?", e.message);
+//         throw e;
+//     }
+// }
 
-async function deleteOneStudent(db) {
-    const studentsCollection = db.collection("students");
-    const filter = { name: "Ірина" }; 
-    try {
-        const result = await studentsCollection.deleteOne(filter);
-        console.log("Видалення одного студента");
-        if (result.deletedCount === 1) {
-            console.log(`Студента з ім'ям 'Ірина' успішно видалено.`);
-        } else {
-            console.log(`Студента з ім'ям 'Ірина' не знайдено.`);
-        }
+// async function deleteOneStudent(db) {
+//     const studentsCollection = db.collection("students");
+//     const filter = { name: "Ірина" }; 
+//     try {
+//         const result = await studentsCollection.deleteOne(filter);
+//         console.log("Видалення одного студента");
+//         if (result.deletedCount === 1) {
+//             console.log(`Студента з ім'ям 'Ірина' успішно видалено.`);
+//         } else {
+//             console.log(`Студента з ім'ям 'Ірина' не знайдено.`);
+//         }
         
-        return result.deletedCount;
-    } catch (e) {
-        console.error("Помилка при видаленні", e.message);
-        throw e;
-    }
-}
+//         return result.deletedCount;
+//     } catch (e) {
+//         console.error("Помилка при видаленні", e.message);
+//         throw e;
+//     }
+// }
 runMongoDBSetup();
